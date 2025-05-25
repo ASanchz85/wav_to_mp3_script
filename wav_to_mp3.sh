@@ -49,7 +49,7 @@ while IFS= read -r -d '' wav_file; do
   output_dir=$(dirname "$output_path")
 
   mkdir -p "$output_dir"
-  ffmpeg -i "$wav_file" -b:a 128k "$output_path"
+  ffmpeg -nostdin -hide_banner -loglevel error -i "$wav_file" -b:a 128k "$output_path"
   echo "Converted: $wav_file -> $output_path"
 done < <(find "$target_dir" -type f -name "*.wav" -print0)
 

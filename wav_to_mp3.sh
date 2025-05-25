@@ -33,16 +33,28 @@ if [ ! -d "$target_dir" ]; then
   exit 1
 fi
 
-# Convert .wav files to .mp3 in the specified directory
+# Define output base directory
+output_base="$target_dir/mp3"
+mkdir -p "$output_base"
+
+# Find and convert .wav files recursively
 echo "Converting .wav files in '$target_dir' to .mp3 at 128kbps..."
-for file in "$target_dir"/*.wav; do
-  if [ -f "$file" ]; then
-    ffmpeg -i "$file" -b:a 128k "${file%.wav}.mp3"
-    echo "Converted: $file"
-  else
-    echo "No .wav files found in '$target_dir'."
-    break
-  fi
-done
+found_files=false
+
+while IFS= read -r -d '' wav_file; do
+  found_files=true
+  # Get relative path from base dir and determine new output path
+  relative_path="${wav_file#$target_dir/}"
+  output_path="$output_base/${relative_path%.wav}.mp3"
+  output_dir=$(dirname "$output_path")
+
+  mkdir -p "$output_dir"
+  ffmpeg -i "$wav_file" -b:a 128k "$output_path"
+  echo "Converted: $wav_file -> $output_path"
+done < <(find "$target_dir" -type f -name "*.wav" -print0)
+
+if ! $found_files; then
+  echo "No .wav files found in '$target_dir'."
+fi
 
 echo "Conversion complete."

@@ -31,3 +31,9 @@ Secondly, choose between executing within the current folder or point out other 
 ./wav_to_mp3.sh -d /path/to/your/directory
 ./wav_to_mp3.sh -d .
 ```
+
+## Other options/flags
+
+-d: Directory containing .wav and .mp3 files (use '.' for current directory)"
+-c: Target bitrate (default: 128k), e.g., 128k, 192k, 320k"
+-p: Enable parallel conversion"
